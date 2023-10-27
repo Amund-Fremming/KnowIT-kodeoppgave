@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import washit.backend.AppEnum.WashingMachineStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,7 +26,7 @@ public class WashingMachine {
     @Enumerated(EnumType.STRING)
     private WashingMachineStatus status;
 
-    private String brukernavn;
+    private String userOfMachine;
 
     @OneToOne
     @JoinColumn(name="washingprogramid")
@@ -34,4 +35,10 @@ public class WashingMachine {
     @OneToMany(mappedBy = "washingMachine")
     private List<Reservation> reservations;
 
+    public WashingMachine() {
+        this.status = WashingMachineStatus.AVAILABLE;
+        this.userOfMachine = "";
+        this.washingProgram = null;
+        this.reservations = new ArrayList<>();
+    }
 }
