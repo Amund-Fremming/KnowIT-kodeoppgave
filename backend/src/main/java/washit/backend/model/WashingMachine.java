@@ -33,7 +33,7 @@ public class WashingMachine {
 
     public WashingMachine() {
         this.status = WashingMachineStatus.AVAILABLE;
-        this.userOfMachine = "";
+        this.userOfMachine = null;
         this.washingProgram = null;
         this.reservations = new ArrayList<>();
     }
