@@ -1,0 +1,1 @@
+# Vite + Typescript + Tailwindcss project
