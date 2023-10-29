@@ -2,6 +2,8 @@ package washit.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import washit.backend.AppEnum.ReservationStatus;
+import washit.backend.AppEnum.WashingMachineStatus;
 import washit.backend.exception.ReservationNotFoundException;
 import washit.backend.exception.WaitEntryNotFoundException;
 import washit.backend.exception.WashingMacineNotFoundException;
@@ -35,43 +37,83 @@ public class WasheryService {
     private WaitEntryRepository waitRepo;
 
     public List<WashingMachine> getAllAvailableMachines() {
-        return null;
+        List<WashingMachine> machines = machineRepo.findAll();
+        return machines
+                .stream()
+                .filter(machine -> machine.getStatus() == WashingMachineStatus.AVAILABLE)
+                .toList();
     }
 
     public WashingMachine getMachineById(long id) throws WashingMacineNotFoundException {
-        return null;
+        WashingMachine machine = machineRepo.findById(id)
+                .orElseThrow(() -> new WashingMacineNotFoundException("Machine with id "+id+" does not exist"));
+
+        return machine;
     }
 
     public List<WashingProgram> getAllPrograms() {
-        return null;
+        return programRepo.findAll();
     }
 
     public WashingProgram getProgramById(long id) throws WashingProgramNotFoundException {
+        WashingProgram program =  programRepo.findById(id)
+                .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+id+" does not exist!"));
+
+        return program;
+    }
+
+    /**
+     * Finds available machines based on you wash
+     */
+    public WashingMachine getAvailableMachineForProgram(long washingProgramId) {
         return null;
     }
 
-    public WashingMachine getAvailableMachineForProgram(WashingProgram program) {
-        return null;
-    }
+    public Reservation createReservationForProgram(long programId, long machineId, String username, LocalDateTime startTime) throws WashingProgramNotFoundException, WashingMacineNotFoundException {
+        WashingProgram program = programRepo.findById(programId)
+                .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
 
-    public Reservation createReservationForProgram(WashingProgram program, String username, LocalDateTime starttime) {
-        return null;
+        WashingMachine machine = machineRepo.findById(machineId)
+                .orElseThrow(() -> new WashingMacineNotFoundException("Machine with id "+machineId+" was not found"));
+
+        LocalDateTime endTime = startTime.plusMinutes(1);
+        if(program.getMinutes() == 90) {
+            endTime = startTime.plusMinutes(1).plusSeconds(30);
+        } else if(program.getMinutes() == 60) {
+            endTime = startTime.plusMinutes(1);
+        } else if(program.getMinutes() == 20) {
+            endTime = startTime.plusSeconds(20);
+        }
+
+        Reservation reservation = new Reservation(machine, username, startTime, endTime);
+        reservationRepo.save(reservation);
+        return reservation;
     }
 
     public Reservation cancelReservation(long reservationid) throws ReservationNotFoundException {
-        return null;
+        Reservation reservation = reservationRepo.findById(reservationid)
+                .orElseThrow(() -> new ReservationNotFoundException("Reservation with id "+reservationid+" was not found"));
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        return reservation;
     }
 
     public List<Reservation> getAllReservationsForUser(String username) {
-        return null;
+        List<Reservation> reservations = reservationRepo.findAll();
+        return reservations.stream()
+                .filter(res -> res.getUsername().equals(username))
+                .toList();
     }
 
     public List<LocalDateTime> getAvailableTimeSlots() {
+        // TODO
         return null;
     }
 
-    public Reservation createFutureReservation(WashingProgram washingProgram, String username, LocalDateTime futureStartTime) {
-        return null;
+    public Reservation createFutureReservation(long washingProgramId, String username, LocalDateTime futureStartTime) {
+
+
+        Reservation reservation = new Reservation();
     }
 
     // Integer represents the minutes available

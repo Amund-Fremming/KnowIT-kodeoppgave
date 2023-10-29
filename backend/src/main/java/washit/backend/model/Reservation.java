@@ -34,13 +34,12 @@ public class Reservation {
     private LocalDateTime starttime;
     private LocalDateTime endtime;
 
-    public Reservation(WashingMachine washingMachine, String username, LocalDateTime starttime) {
+    public Reservation(WashingMachine washingMachine, String username, LocalDateTime startTime, LocalDateTime endTime) {
         this.washingMachine = washingMachine;
         this.username = username;
         this.status = ReservationStatus.PENDING;
-        this.starttime = starttime;
+        this.starttime = startTime;
+        this.endtime = endTime;
 
-        // Reservations only last ann hour, we set the end time to start + 1 hour
-        this.endtime = starttime.plusMinutes(60);
     }
 }

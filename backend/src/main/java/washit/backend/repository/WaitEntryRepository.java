@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import washit.backend.model.WaitEntry;
 
 @Repository
-public interface WaitEntryRepository extends JpaRepository<Long, WaitEntry> {
+public interface WaitEntryRepository extends JpaRepository<WaitEntry, Long> {
 }

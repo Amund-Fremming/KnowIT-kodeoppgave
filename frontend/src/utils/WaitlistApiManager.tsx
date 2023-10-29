@@ -2,7 +2,7 @@
  * Mangler å ta inn parametere, og sette opp exceptions og feilhåndtering
  */
 
-const URL_BASE = "";
+const URL_BASE = "http://localhost:8080/api/waitlist";
 
 export const getWaitlist = () => {
   try {

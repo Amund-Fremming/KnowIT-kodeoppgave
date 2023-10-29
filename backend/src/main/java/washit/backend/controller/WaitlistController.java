@@ -19,7 +19,13 @@ public class WaitlistController {
 
     @GetMapping("/getall")
     public ResponseEntity<Object> getWaitlist() {
-        // TODO
+
+
+        try {
+
+        } catch (Exception e) {
+
+        }
 
         return new ResponseEntity<>(null);
     }
