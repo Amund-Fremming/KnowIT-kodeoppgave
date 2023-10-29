@@ -28,25 +28,13 @@ public class WashingMachineController {
     }
 
     /**
-     * This method is called alot, this method is responsible for updating the waitlist, and returning the person that can use a machine
-     * if the person does not use the machine after 2 mins when the method is called again they loose the chance to use a machine and their
-     * name is taken of the board
-     */
-    @GetMapping("/update-waitlist")
-    public ResponseEntity<Object> updateWaitlistAndReturnAlert() {
-        // TODO
-
-        return new ResponseEntity<>(null);
-    }
-
-    /**
      * Called after every 10 mins
      * Used to see if a program on a machine is done and the machine is made available to others now
      */
     @GetMapping()
     public ResponseEntity<Object> toggleMachinesStatusesIfProgramDone() {
         // TODO
-
+        // return all machines
         return new ResponseEntity<>(null);
     }
 }

@@ -62,13 +62,6 @@ public class WasheryService {
         return program;
     }
 
-    /**
-     * Finds available machines based on you wash
-     */
-    public WashingMachine getAvailableMachineForProgram(long washingProgramId) {
-        return null;
-    }
-
     public Reservation createReservationForProgram(long programId, long machineId, String username, LocalDateTime startTime) throws WashingProgramNotFoundException, WashingMacineNotFoundException {
         WashingProgram program = programRepo.findById(programId)
                 .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
@@ -105,31 +98,73 @@ public class WasheryService {
                 .toList();
     }
 
+    public Reservation createFutureReservation(long programId, long machineId, String username, LocalDateTime startTime) throws WashingProgramNotFoundException, WashingMacineNotFoundException {
+        WashingProgram program = programRepo.findById(programId)
+                .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
+
+        WashingMachine machine = machineRepo.findById(machineId)
+                .orElseThrow(() -> new WashingMacineNotFoundException("Machine with id "+machineId+" was not found"));
+
+        LocalDateTime endTime = startTime.plusMinutes(1);
+        if(program.getMinutes() == 90) {
+            endTime = startTime.plusMinutes(1).plusSeconds(30);
+        } else if(program.getMinutes() == 60) {
+            endTime = startTime.plusMinutes(1);
+        } else if(program.getMinutes() == 20) {
+            endTime = startTime.plusSeconds(20);
+        }
+
+        Reservation reservation = new Reservation(machine, username, startTime, endTime);
+        return reservation;
+    }
+
+    public WaitEntry addUserToWaitlist(String username, long programId) throws Exception, WashingProgramNotFoundException {
+        WashingProgram program = programRepo.findById(programId)
+                .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
+
+        WaitEntry waitEntry = new WaitEntry(program, username);
+        return waitEntry;
+    }
+
+    public List<WaitEntry> getWaitlist() {
+        return waitRepo.findAll();
+    }
+
+    public WaitEntry removeUserFromWaitlist(long waitEntryId) throws WaitEntryNotFoundException {
+        WaitEntry waitEntry = waitRepo.findById(waitEntryId)
+                .orElseThrow(() -> new WaitEntryNotFoundException("WaitEntry with id "+waitEntryId+" was not found"));
+
+        waitRepo.delete(waitEntry);
+        return waitEntry;
+    }
+
+    public List<WaitEntry> getWaitlistForProgram(long programId) throws Exception, WashingProgramNotFoundException {
+        List<WaitEntry> waitlist = waitRepo.findAll();
+
+        return waitlist.stream()
+                .filter(entry -> entry.getWashingProgram().getWashingprogramid() == programId)
+                .toList();
+    }
+
+    public List<Reservation> getAllReservations() {
+        return reservationRepo.findAll();
+    }
+
     public List<LocalDateTime> getAvailableTimeSlots() {
         // TODO
         return null;
     }
 
-    public Reservation createFutureReservation(long washingProgramId, String username, LocalDateTime futureStartTime) {
-
-
-        Reservation reservation = new Reservation();
+    /**
+     * Finds available machines based on you wash
+     */
+    public WashingMachine getAvailableMachineForProgram(long washingProgramId) {
+        // TODO
+        return null;
     }
 
     // Integer represents the minutes available
     public Map<WashingMachine, Integer> findAvailableMachinesForCurrentHour() {
-        return null;
-    }
-
-    public WaitEntry addUserToWaitlist(String username, long programId) throws Exception {
-        return null;
-    }
-
-    public WaitEntry removeUserFromWaitlist(long waitEntryId) throws WaitEntryNotFoundException {
-        return null;
-    }
-
-    public List<WaitEntry> getWaitlistForProgram(long programId) throws Exception {
         return null;
     }
 
