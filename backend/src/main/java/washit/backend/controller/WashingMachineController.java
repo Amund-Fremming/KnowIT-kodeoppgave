@@ -1,8 +1,15 @@
 package washit.backend.controller;
 
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import washit.backend.model.Reservation;
+import washit.backend.model.WashingMachine;
+import washit.backend.service.WasheryService;
+
+import java.util.List;
 
 @RequestMapping("/api/machine")
 @RestController
@@ -13,28 +20,32 @@ import org.springframework.web.bind.annotation.*;
 )
 public class WashingMachineController {
 
+    @Autowired
+    private WasheryService service;
+
     @GetMapping("/washingmachines")
     public ResponseEntity<Object> getAllWashingMachines() {
-        // TODO
+        List<WashingMachine> machines;
 
-        return new ResponseEntity<>(null);
+        try {
+            machines = service.getAllWashingMachines();
+        } catch(Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(machines, HttpStatus.OK);
     }
 
-    @GetMapping("/machines-with-time-left")
-    public ResponseEntity<Object> getWashingMachinesWithTimeLeft() {
-        // TODO
+    @GetMapping("updatedmachines")
+    public ResponseEntity<Object> updateMachinesAndReturnUpdatedData() {
+        List<WashingMachine> machines;
 
-        return new ResponseEntity<>(null);
-    }
+        try {
+            machines = service.updateMachineStatus();
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-    /**
-     * Called after every 10 mins
-     * Used to see if a program on a machine is done and the machine is made available to others now
-     */
-    @GetMapping()
-    public ResponseEntity<Object> toggleMachinesStatusesIfProgramDone() {
-        // TODO
-        // return all machines
-        return new ResponseEntity<>(null);
+        return new ResponseEntity<>(machines, HttpStatus.OK);
     }
 }

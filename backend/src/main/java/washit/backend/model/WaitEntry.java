@@ -4,6 +4,8 @@
  */
 package washit.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,18 +20,19 @@ public class WaitEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long waitentryid;
+    private Integer waitentryid;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="washingprogramid")
     private WashingProgram washingProgram;
 
     private String username;
-    private LocalDateTime timeAdded;
+    private LocalDateTime timeadded;
 
     public WaitEntry(WashingProgram washingProgram, String username) {
         this.washingProgram = washingProgram;
         this.username = username;
-        this.timeAdded = LocalDateTime.now();
+        this.timeadded = LocalDateTime.now();
     }
 }

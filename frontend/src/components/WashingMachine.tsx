@@ -1,7 +1,7 @@
 interface IWashingMachine {
   id: number;
   available: boolean;
-  user: string;
+  user?: string;
 }
 
 export default function WashingMachine({

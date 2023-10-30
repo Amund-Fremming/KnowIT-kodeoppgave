@@ -3,6 +3,8 @@
  */
 package washit.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import washit.backend.AppEnum.WashingMachineStatus;
@@ -17,23 +19,25 @@ public class WashingMachine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long washingmachineid;
+    private Integer washingmachineid;
 
     @Enumerated(EnumType.STRING)
     private WashingMachineStatus status;
 
-    private String userOfMachine;
+    private String userofmachine;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="washingprogramid")
     private WashingProgram washingProgram;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "washingMachine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations;
 
     public WashingMachine() {
         this.status = WashingMachineStatus.AVAILABLE;
-        this.userOfMachine = null;
+        this.userofmachine = null;
         this.washingProgram = null;
         this.reservations = new ArrayList<>();
     }

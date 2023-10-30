@@ -5,6 +5,8 @@
  */
 package washit.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +22,9 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long reservationid;
+    private Integer reservationid;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="washingmachineid")
     private WashingMachine washingMachine;

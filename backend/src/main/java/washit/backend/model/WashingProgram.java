@@ -4,6 +4,7 @@
  */
 package washit.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,22 +21,24 @@ public class WashingProgram {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long washingprogramid;
+    private Integer washingprogramid;
 
     @Enumerated(EnumType.STRING)
-    private WashType washType;
+    private WashType washtype;
 
     private int temperature;
     private int minutes;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "washingProgram")
     private List<WashingMachine> washingMachines;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "washingProgram")
     private List<WaitEntry> waitEntries;
 
     public WashingProgram(WashType washType, int temperature, int minutes) {
-        this.washType = washType;
+        this.washtype = washType;
         this.temperature = temperature;
         this.minutes = minutes;
         washingMachines = new ArrayList<>();

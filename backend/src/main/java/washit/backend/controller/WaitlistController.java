@@ -21,19 +21,6 @@ public class WaitlistController {
     @Autowired
     private WasheryService service;
 
-    @GetMapping("/getall")
-    public ResponseEntity<Object> getWaitlist() {
-        List<WaitEntry> waitlist;
-
-        try {
-            waitlist = service.getWaitlist();
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<>(waitlist, HttpStatus.OK);
-    }
-
     @GetMapping("/getnext")
     public ResponseEntity<Object> searchForWaitlistAlert() {
         WaitEntry entry;
@@ -53,8 +40,8 @@ public class WaitlistController {
         return null;
     }
 
-    @PostMapping("/remove")
-    public ResponseEntity<Object> removeFromWaitlist(@RequestParam long waitEntryId) {
+    @PostMapping("/remove/{username}")
+    public ResponseEntity<Object> removeFromWaitlist(@RequestParam Integer waitEntryId) {
         WaitEntry entry;
 
         try {
@@ -66,8 +53,8 @@ public class WaitlistController {
         return new ResponseEntity<>(null);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Object> addToWaitlist(@RequestParam String username, @RequestParam long programId) {
+    @PostMapping("/add/{username}")
+    public ResponseEntity<Object> addToWaitlist(@RequestParam String username, @RequestParam Integer programId) {
         WaitEntry entry;
 
         try {

@@ -12,17 +12,22 @@ export const getWaitlist = () => {
   }
 };
 
-export const removeEntry = () => {
+export const addToWaitlist = async (username: string) => {
   try {
-    console.log("HEY");
-  } catch (err) {
-    console.error(err);
-  }
-};
+    const response = await fetch(URL_BASE + "/washingmachines", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-export const addEntry = () => {
-  try {
-    console.log("HEY");
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data;
   } catch (err) {
     console.error(err);
   }

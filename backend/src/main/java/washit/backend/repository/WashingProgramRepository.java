@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import washit.backend.model.WashingProgram;
 
 @Repository
-public interface WashingProgramRepository extends JpaRepository<WashingProgram, Long> {
+public interface WashingProgramRepository extends JpaRepository<WashingProgram, Integer> {
 }
