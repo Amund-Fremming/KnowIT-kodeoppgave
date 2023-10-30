@@ -35,10 +35,6 @@ public class WasheryService {
     @Autowired
     private WaitEntryRepository waitRepo;
 
-    public List<WashingProgram> getAllPrograms() {
-        return programRepo.findAll();
-    }
-
     public Reservation createReservationForProgram(Integer programId, Integer machineId, String username, LocalDateTime startTime) throws WashingProgramNotFoundException, WashingMacineNotFoundException {
         WashingProgram program = programRepo.findById(programId)
                 .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
@@ -73,10 +69,18 @@ public class WasheryService {
     }
 
     public WaitEntry addUserToWaitlist(String username, Integer programId) throws Exception, WashingProgramNotFoundException {
-        WashingProgram program = programRepo.findById(programId)
-                .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
+        WashingProgram program = null;
+
+        try {
+            program = programRepo.findById(programId)
+                    .orElseThrow(() -> new WashingProgramNotFoundException("Program with id "+programId+" was not found"));
+        } catch(Exception e) {
+            System.err.println(e.getMessage());
+        }
+
 
         WaitEntry waitEntry = new WaitEntry(program, username);
+        waitRepo.save(waitEntry);
         return waitEntry;
     }
 
@@ -115,32 +119,28 @@ public class WasheryService {
             Reservation currentReservation = reservationRepo.findByUsername(machine.getUserofmachine());
             LocalDateTime now = LocalDateTime.now();
 
-            // If there's a current reservation for the machine
             if (currentReservation != null) {
-                // If the current reservation has ended
                 if (currentReservation.getEndtime().isBefore(now)) {
                     currentReservation.setStatus(ReservationStatus.COMPLETED);
                     reservationRepo.save(currentReservation);
 
-                    // Check for the next reservation that starts after the currentReservation has ended
                     Reservation nextReservation = reservationRepo.findTopByWashingMachineAndStarttimeAfterOrderByStarttime(machine, currentReservation.getEndtime());
 
-                    // If there's a next reservation and it has started but not ended yet
                     if (nextReservation != null && nextReservation.getStarttime().isBefore(now) && nextReservation.getEndtime().isAfter(now)) {
                         machine.setStatus(WashingMachineStatus.IN_USE);
                         machine.setUserofmachine(nextReservation.getUsername());
                     } else {
                         machine.setStatus(WashingMachineStatus.AVAILABLE);
-                        // machine.setUserofmachine(null);
+                        machine.setUserofmachine(null);
                     }
                 }
-                // If the current reservation hasn't ended yet
+
                 else {
                     machine.setStatus(WashingMachineStatus.IN_USE);
                 }
                 machineRepo.save(machine);
             }
-            // If there's no current reservation, but there's a future reservation that's about to start
+
             else {
                 Reservation upcomingReservation = reservationRepo.findTopByWashingMachineAndStarttimeAfterOrderByStarttime(machine, now);
                 if (upcomingReservation != null && upcomingReservation.getStarttime().isBefore(now.plusMinutes(1))) {
@@ -154,11 +154,38 @@ public class WasheryService {
         return machineRepo.findAll();
     }
 
-    public List<LocalDateTime> findAvailableReservationsForProgram() {
+    public List<LocalDateTime> findAvailableReservationsForProgram(Integer programid) {
         // TODO
         /*
-        Hvis man velger å ta en reservasjon som er innenfor timen til en annen må også WashingMachine oppdateres til databasen
+        hent alle reservasjoner
+        lag en liste med alle tids intervaller som er mulig å reservere
+        loop over alle tids intervaller
+            Fjern intervaller om de ingår i reservasjoner
+
+         returner listen med starttider til intervallene
          */
+        return null;
+    }
+
+    public WaitEntry alertUserFromWaitlist() {
+        // TODO
+
+        /*
+        Denne blir kalt på hver gang maskinene oppdateres, slik at det mulig er ledig maskin for noen
+
+        Hent venteliste
+        Loop over liste
+            for hver bruker, kall på findAvailableReservationsForProgram for å finne om ledig
+            Hvis ledig for denne brukeren
+                Send alert til frontend
+                Fjern bruker fra ventelisten
+            Hvis ikke ledig for denne brukeren
+                Fortsett videre i listen
+
+         Hvis ikke ledig for noen returnern null
+
+         */
+
         return null;
     }
 }

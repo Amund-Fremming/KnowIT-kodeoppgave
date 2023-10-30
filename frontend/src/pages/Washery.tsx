@@ -9,6 +9,10 @@ import { IWashingMachine, WashingMachineStatus } from "../types/Types";
 import { Link } from "react-router-dom";
 
 export default function Washery() {
+  const [washingMachines, setWashingMachines] = useState<
+    IWashingMachine[] | null
+  >();
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getUpdatedMachines();
@@ -37,10 +41,6 @@ export default function Washery() {
       clearTimeout(timeoutId);
     };
   }, []);
-
-  const [washingMachines, setWashingMachines] = useState<
-    IWashingMachine[] | null
-  >();
 
   return (
     <>

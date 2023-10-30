@@ -24,20 +24,15 @@ public class WaitlistController {
     @GetMapping("/getnext")
     public ResponseEntity<Object> searchForWaitlistAlert() {
         WaitEntry entry;
-        // TODO
         try {
 
-            /*
-                Henter en person fra ventelisten om det er ledig maskin
-                eller om det finens smutthul man kan bruke
-                varsler med brukernavn
-                sletter entry i databasem
-             */
+            entry = service.alertUserFromWaitlist();
 
         } catch(Exception e) {
-
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
-        return null;
+
+        return new ResponseEntity<>(entry, HttpStatus.OK);
     }
 
     @PostMapping("/remove/{username}")
@@ -53,12 +48,12 @@ public class WaitlistController {
         return new ResponseEntity<>(null);
     }
 
-    @PostMapping("/add/{username}")
-    public ResponseEntity<Object> addToWaitlist(@RequestParam String username, @RequestParam Integer programId) {
+    @PostMapping("/add/{username}/{programid}")
+    public ResponseEntity<Object> addToWaitlist(@PathVariable(name="username") String username, @PathVariable(name="programid") Integer programid) {
         WaitEntry entry;
 
         try {
-            entry = service.addUserToWaitlist(username, programId);
+            entry = service.addUserToWaitlist(username, programid);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

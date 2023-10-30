@@ -65,7 +65,22 @@ public class ReservationController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(reservation, HttpStatus.OK);
+    }
+
+    @GetMapping("/available/{programid}")
+    public ResponseEntity<Object> getAvailableTimes(@PathVariable(name="programid") Integer programid) {
+        List<LocalDateTime> times;
+
+        try {
+
+            times = service.findAvailableReservationsForProgram(programid);
+
+        } catch(Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(times, HttpStatus.OK);
     }
 
 }

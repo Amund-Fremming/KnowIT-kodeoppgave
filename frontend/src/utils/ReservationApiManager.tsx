@@ -1,7 +1,3 @@
-/**
- * Mangler å ta inn parametere, og sette opp exceptions og feilhåndtering
- */
-
 const URL_BASE = "http://localhost:8080/api/reservation";
 
 export const getAllReservations = async () => {
@@ -58,6 +54,27 @@ export const createReservation = async (
 };
 
 export const cancelReservation = async (reservationId: number) => {
+  try {
+    const response = await fetch(URL_BASE + `/delete/${reservationId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getAvailableTimes = async () => {
   try {
     const response = await fetch(URL_BASE + `/delete/${reservationId}`, {
       method: "POST",
